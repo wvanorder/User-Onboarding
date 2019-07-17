@@ -5,7 +5,19 @@ import axios from 'axios';
 import styled from 'styled-components';
 import './App.css';
 
+const Rows = styled.div`
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100vw;
+    justify-content: space-around;
+`
+
+const Row2 = styled.div`
+    margin-top: 160px;
+`
+
 const FormyBoi = styled(Form)`
+    margin-top: 100px;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -19,42 +31,53 @@ const FieldyBoi = styled(Field)`
     border: 1px solid white;
     width: 300px;
     height: 60px;
-    font-size: 56px;
+    font-size: 48px;
     color: white;
     box-shadow: 9px 9px 14px 1px rgba(0,0,0,0.28);
     padding: 2px;
 `
 
 const Button = styled.button`
-    width: 50px;
-    height: 25px;
+    width: 150px;
+    height: 45px;
+    border-radius: 3px;
+    background-color: rgb(111, 164, 136);
+    
+    &:hover{
+        background-color: aquamarine;
+        transition-duration: 0.3s;
+    }
 `
 
 function LoginForm({ values, errors, touched, isSubmitting }){
-    console.log(values);
     return(
-        <FormyBoi>
-            <div>
+        <Rows>
+            <FormyBoi>
+                <div>
+                    <FieldyBoi type="text" name="name" placeholder="Name" />
+                </div>
+                <div>
+                    <FieldyBoi type="email" name="email" placeholder="Email" />
+                </div>
+                <div>
+                    <FieldyBoi type="password" name="password" placeholder="Password" />
+                </div>
+                <div>
+                    <label>
+                        <Field type="checkbox" name="tos" checked={values.tos} />
+                        Accept TOS
+                    </label>
+                </div>
+                <Button type="submit" disabled={isSubmitting}>Submit!</Button>
+            </FormyBoi>
+            <Row2>
             {touched.tos && errors.tos && <p>{errors.tos}</p>}
-                {touched.name && errors.name && <p>{errors.name}</p>}
-                <FieldyBoi type="text" name="name" placeholder="Name" />
-            </div>
-            <div>
+            {touched.name && errors.name && <p>{errors.name}</p>}
             {touched.email && errors.email && <p>{errors.email}</p>}
-                <FieldyBoi type="email" name="email" placeholder="Email" />
-            </div>
-            <div>
             {touched.password && errors.password && <p>{errors.password}</p>}
-                <FieldyBoi type="password" name="password" placeholder="Password" />
-            </div>
-            <div>
-                <label>
-                    <Field type="checkbox" name="tos" checked={values.tos} />
-                    Accept TOS
-                </label>
-            </div>
-            <Button type="submit" disabled={isSubmitting}>Submit!</Button>
-        </FormyBoi>
+            </Row2>
+        </Rows>
+        
     )
 };
 
@@ -94,12 +117,10 @@ const FormikLoginForm = withFormik({
                 .then(res => {
                     console.log(res);
                     res.status === 201? values.toggleSignUpSuccess(true) : values.toggleSignUpSuccess(false);
+                    window.alert(`${res.data.name} has successfully made an account. Their password is ${res.data.password}. Steal their money!`)
                     resetForm();
                     setSubmitting(false);
                 })
-                .then(
-                    console.log(values.signUpSuccess)
-                )
                 .catch(err => {
                     console.log(err);
                     setSubmitting(false);
